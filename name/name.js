@@ -35,13 +35,17 @@ function flash(button, message) {
   setTimeout(() => { button.textContent = original; }, 1400);
 }
 
-// 캐릭터 그림을 못 받아도 카드는 글자만으로 만든다(null)
-const characterImage = new Promise((resolve) => {
-  const img = new Image();
-  img.onload = () => resolve(img);
-  img.onerror = () => resolve(null);
-  img.src = "../img/pokchan-heart.png";
-});
+// 캐릭터 그림은 카드를 만들 때 처음 받는다(페이지 열 때 받으면 첫 화면이 느려진다). 못 받으면 글자만으로(null)
+let characterImagePromise = null;
+function characterImage() {
+  characterImagePromise ??= new Promise((resolve) => {
+    const img = new Image();
+    img.onload = () => resolve(img);
+    img.onerror = () => resolve(null);
+    img.src = "../img/pokchan-heart.png";
+  });
+  return characterImagePromise;
+}
 
 /** 폭을 넘으면 글자 크기를 줄인다 */
 function fitFont(ctx, text, weight, family, size, min, maxWidth) {
@@ -81,7 +85,7 @@ async function renderNameCard(korean, kana) {
   ctx.fillRect(W / 2 - w / 2 - 10, 250 + size * 0.55, w + 20, size * 0.4);
   ctx.fillStyle = "#221a3b";
   ctx.fillText(korean, W / 2, 250 + size * 0.9);
-  const img = await characterImage;
+  const img = await characterImage();
   if (img) {
     const ih = 380;
     const iw = (img.width / img.height) * ih;
