@@ -40,7 +40,7 @@ const characterImage = new Promise((resolve) => {
   const img = new Image();
   img.onload = () => resolve(img);
   img.onerror = () => resolve(null);
-  img.src = "../img/tteok-heart.png";
+  img.src = "../img/pokchan-heart.png";
 });
 
 /** 폭을 넘으면 글자 크기를 줄인다 */
