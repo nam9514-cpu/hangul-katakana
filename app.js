@@ -1,5 +1,6 @@
 import { toSegments } from "./src/hangul-kana.js";
-import { SHARE_TAGS, STICKER_URL } from "./src/config.js";
+import { SHARE_TAGS, SITE_URL, STICKER_URL } from "./src/config.js";
+import { renderCard } from "./src/card.js";
 
 const MAX_LEN = 2000;
 const EXAMPLES = ["사랑해요", "감사합니다", "보고 싶어", "잘 먹겠습니다", "괜찮아요", "생일 축하해"];
@@ -66,6 +67,7 @@ function render() {
   $("#copy").disabled = empty;
   $("#share").disabled = empty;
   $("#tweet").disabled = empty;
+  $("#save-image").disabled = empty;
   const rendered = text.split("\n").map(renderLine);
   linesEl.replaceChildren(...rendered.map((r) => r.row));
   plainEl.textContent = rendered.map((r) => r.kana).join("\n");
@@ -160,6 +162,20 @@ function init() {
     intent.searchParams.set("url", shareUrl());
     intent.searchParams.set("hashtags", SHARE_TAGS.join(","));
     window.open(intent.toString(), "_blank", "noopener");
+  });
+  $("#save-image").addEventListener("click", async (e) => {
+    const button = e.currentTarget;
+    try {
+      const blob = await renderCard(src.value.slice(0, MAX_LEN), { style, siteLabel: `ハングル→カタカナ 発音変換 ｜ ${new URL(SITE_URL).host}${new URL(SITE_URL).pathname}` });
+      const link = document.createElement("a");
+      link.href = URL.createObjectURL(blob);
+      link.download = "hangul-katakana.png";
+      link.click();
+      setTimeout(() => URL.revokeObjectURL(link.href), 5000);
+      flash(button, "保存しました");
+    } catch {
+      flash(button, "保存できませんでした");
+    }
   });
   if (STICKER_URL) {
     const promo = $("#sticker-promo");
