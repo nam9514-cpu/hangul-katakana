@@ -210,3 +210,6 @@ a { color: inherit; }
 .phrase-list small { display: block; color: var(--ink-soft); font-size: 12px; }
 a.btn { display: inline-block; text-decoration: none; }
 .to-phrases { text-align: center; font-weight: 700; }
+
+.promo { background: var(--pink-soft); }
+.promo p { margin: 0 0 10px; }

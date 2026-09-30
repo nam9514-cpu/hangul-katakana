@@ -1,4 +1,5 @@
 import { toSegments } from "./src/hangul-kana.js";
+import { SHARE_TAGS, STICKER_URL } from "./src/config.js";
 
 const MAX_LEN = 2000;
 const EXAMPLES = ["사랑해요", "감사합니다", "보고 싶어", "잘 먹겠습니다", "괜찮아요", "생일 축하해"];
@@ -64,6 +65,7 @@ function render() {
   document.querySelector(".result-card").classList.toggle("is-example", empty);
   $("#copy").disabled = empty;
   $("#share").disabled = empty;
+  $("#tweet").disabled = empty;
   const rendered = text.split("\n").map(renderLine);
   linesEl.replaceChildren(...rendered.map((r) => r.row));
   plainEl.textContent = rendered.map((r) => r.kana).join("\n");
@@ -151,6 +153,19 @@ function init() {
   src.addEventListener("input", render);
   $("#copy").addEventListener("click", (e) => copyText(plainEl.textContent, e.currentTarget));
   $("#share").addEventListener("click", (e) => copyText(shareUrl(), e.currentTarget));
+  $("#tweet").addEventListener("click", () => {
+    const text = `${src.value.trim().slice(0, 60)} の読み方は「${plainEl.textContent.slice(0, 60)}」`;
+    const intent = new URL("https://twitter.com/intent/tweet");
+    intent.searchParams.set("text", text);
+    intent.searchParams.set("url", shareUrl());
+    intent.searchParams.set("hashtags", SHARE_TAGS.join(","));
+    window.open(intent.toString(), "_blank", "noopener");
+  });
+  if (STICKER_URL) {
+    const promo = $("#sticker-promo");
+    promo.querySelector("a").href = STICKER_URL;
+    promo.hidden = false;
+  }
   setupSpeech();
   renderRules();
   setStyle(params.get("s") === "precise" ? "precise" : "common");
