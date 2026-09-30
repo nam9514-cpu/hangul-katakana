@@ -1,6 +1,7 @@
 import { toSegments } from "./src/hangul-kana.js";
 import { SHARE_TAGS, SITE_URL, STICKER_URL } from "./src/config.js";
 import { renderCard } from "./src/card.js";
+import { saveImage } from "./src/save-image.js";
 
 const MAX_LEN = 2000;
 const EXAMPLES = ["사랑해요", "감사합니다", "보고 싶어", "잘 먹겠습니다", "괜찮아요", "생일 축하해"];
@@ -167,12 +168,8 @@ function init() {
     const button = e.currentTarget;
     try {
       const blob = await renderCard(src.value.slice(0, MAX_LEN), { style, siteLabel: `ハングル→カタカナ 発音変換 ｜ ${new URL(SITE_URL).host}${new URL(SITE_URL).pathname}` });
-      const link = document.createElement("a");
-      link.href = URL.createObjectURL(blob);
-      link.download = "hangul-katakana.png";
-      link.click();
-      setTimeout(() => URL.revokeObjectURL(link.href), 5000);
-      flash(button, "保存しました");
+      const result = await saveImage(blob, "hangul-katakana.png", `${plainEl.textContent.slice(0, 60)} #韓国語\n${shareUrl()}`);
+      if (result !== "cancelled") flash(button, result === "shared" ? "できました" : "保存しました");
     } catch {
       flash(button, "保存できませんでした");
     }

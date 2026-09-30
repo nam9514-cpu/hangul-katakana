@@ -1,6 +1,7 @@
 import { kanaToHangul } from "../src/kana-hangul.js";
 import { toKana } from "../src/hangul-kana.js";
 import { SITE_URL } from "../src/config.js";
+import { saveImage } from "../src/save-image.js";
 
 const $ = (sel) => document.querySelector(sel);
 const input = $("#name");
@@ -100,12 +101,8 @@ $("#save-card").addEventListener("click", async (e) => {
   try {
     const r = kanaToHangul(current());
     const blob = await renderNameCard(r.sound, current());
-    const link = document.createElement("a");
-    link.href = URL.createObjectURL(blob);
-    link.download = "hangul-name.png";
-    link.click();
-    setTimeout(() => URL.revokeObjectURL(link.href), 5000);
-    flash(button, "保存しました");
+    const result = await saveImage(blob, "hangul-name.png", `わたしの名前をハングルで書くと「${r.sound}」 #韓国語\n${SITE_URL}name/`);
+    if (result !== "cancelled") flash(button, result === "shared" ? "できました" : "保存しました");
   } catch {
     flash(button, "保存できませんでした");
   }
