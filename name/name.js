@@ -18,8 +18,11 @@ function render() {
   $("#standard-read").textContent = toKana(r.standard, { style: "common" });
   const warn = $("#unknown");
   warn.hidden = r.unknown.length === 0;
-  warn.textContent = r.unknown.length ? `「${r.unknown.join("")}」は変換できません。漢字は、よみがな（ひらがな）で入れてください。` : "";
-  const empty = !input.value.trim();
+  warn.textContent = r.unknown.length
+    ? `「${r.unknown.join("")}」は変換できません。ひらがな・カタカナで入れてください（漢字は、よみがなで）。`
+    : "";
+  // 결과가 비면(ー·ん 만 입력 등) 버튼을 끈다 — 빈 카드·빈 복사를 막는다
+  const empty = !input.value.trim() || !r.sound.trim();
   $("#save-card").disabled = empty;
   $("#copy-name").disabled = empty;
 }
@@ -31,12 +34,24 @@ function flash(button, message) {
   setTimeout(() => { button.textContent = original; }, 1400);
 }
 
-const characterImage = new Promise((resolve, reject) => {
+// 캐릭터 그림을 못 받아도 카드는 글자만으로 만든다(null)
+const characterImage = new Promise((resolve) => {
   const img = new Image();
   img.onload = () => resolve(img);
-  img.onerror = () => reject(new Error("画像を読み込めませんでした"));
+  img.onerror = () => resolve(null);
   img.src = "../img/tteok-heart.png";
 });
+
+/** 폭을 넘으면 글자 크기를 줄인다 */
+function fitFont(ctx, text, weight, family, size, min, maxWidth) {
+  let s = size;
+  ctx.font = `${weight} ${s}px ${family}`;
+  while (ctx.measureText(text).width > maxWidth && s > min) {
+    s -= 4;
+    ctx.font = `${weight} ${s}px ${family}`;
+  }
+  return s;
+}
 
 async function renderNameCard(korean, kana) {
   await Promise.all([
@@ -56,24 +71,21 @@ async function renderNameCard(korean, kana) {
   ctx.strokeRect(30, 30, W - 60, H - 60);
   ctx.textAlign = "center";
   ctx.fillStyle = "#5c5474";
-  ctx.font = '700 44px "Zen Maru Gothic"';
+  fitFont(ctx, `${kana} のハングル`, 700, '"Zen Maru Gothic"', 44, 20, W - 160);
   ctx.fillText(`${kana} のハングル`, W / 2, 150);
-  // 이름이 길면 글자 크기를 줄인다
-  let size = 220;
-  ctx.font = `${size}px Jua`;
-  while (ctx.measureText(korean).width > W - 160 && size > 60) {
-    size -= 10;
-    ctx.font = `${size}px Jua`;
-  }
+  // 이름이 길면 글자 크기를 줄인다(최소 24px 까지 — 40자도 폭 안에)
+  const size = fitFont(ctx, korean, 400, "Jua", 220, 24, W - 160);
   ctx.fillStyle = "#ffd3e2";
   const w = ctx.measureText(korean).width;
   ctx.fillRect(W / 2 - w / 2 - 10, 250 + size * 0.55, w + 20, size * 0.4);
   ctx.fillStyle = "#221a3b";
   ctx.fillText(korean, W / 2, 250 + size * 0.9);
   const img = await characterImage;
-  const ih = 380;
-  const iw = (img.width / img.height) * ih;
-  ctx.drawImage(img, W / 2 - iw / 2, H - ih - 150, iw, ih);
+  if (img) {
+    const ih = 380;
+    const iw = (img.width / img.height) * ih;
+    ctx.drawImage(img, W / 2 - iw / 2, H - ih - 150, iw, ih);
+  }
   ctx.fillStyle = "#5c5474";
   ctx.font = '700 28px "Zen Maru Gothic"';
   const url = new URL(SITE_URL);
@@ -109,4 +121,6 @@ $("#copy-name").addEventListener("click", async (e) => {
 });
 
 input.addEventListener("input", render);
+// 이름별 페이지의 "이 이름으로 카드 만들기" 링크(?n=さくら)
+input.value = (new URLSearchParams(location.search).get("n") ?? "").slice(0, 40);
 render();

@@ -21,7 +21,10 @@ ROW("z", "ざじずぜぞ");
 ROW("t", "た__てと");
 KANA["ち"] = ["ch", "i"];
 KANA["つ"] = ["ts", "u"];
-ROW("d", "だぢづでど");
+ROW("d", "だ__でど");
+// ぢ·づ 는 じ·ず 와 같은 소리 → 지·즈 (つづき → 쓰즈키)
+KANA["ぢ"] = ["z", "i"];
+KANA["づ"] = ["z", "u"];
 ROW("n", "なにぬねの");
 ROW("h", "はひふへほ");
 ROW("b", "ばびぶべぼ");
@@ -31,11 +34,18 @@ ROW("y", "や_ゆ_よ");
 ROW("r", "らりるれろ");
 KANA["わ"] = ["w", "a"];
 KANA["を"] = ["", "o"];
+KANA["ゔ"] = ["b", "u"]; // ヴ → ㅂ 계열(ヴァイオリン → 바이오린)
+KANA["ゐ"] = ["", "i"];
+KANA["ゑ"] = ["", "e"];
+KANA["ゎ"] = ["w", "a"];
+KANA["ゕ"] = ["k", "a"]; // 작은 ヵ(一ヵ月)
+KANA["ゖ"] = ["k", "e"]; // 작은 ヶ
 const SMALL_Y = { "ゃ": "a", "ゅ": "u", "ょ": "o" };
 const SMALL_V = { "ぁ": "a", "ぃ": "i", "ぅ": "u", "ぇ": "e", "ぉ": "o" };
 
 function toHiragana(text) {
-  return [...text.normalize("NFC")].map((ch) => {
+  // NFKC: 반각 카타카나(ｻｸﾗ)를 전각으로 — 일본 IME 가 반각을 내는 경우가 있다
+  return [...text.normalize("NFKC")].map((ch) => {
     const c = ch.codePointAt(0);
     return c >= 0x30a1 && c <= 0x30f6 ? String.fromCodePoint(c - 0x60) : ch;
   }).join("");
@@ -68,8 +78,8 @@ function medialFor(cons, vowel, glide) {
   if (glide === "y") return Y_VOWEL[vowel] ?? VOWEL[vowel];
   if (cons === "w") return "ㅘ";
   if (cons === "y") return Y_VOWEL[vowel];
-  // す·ず·つ·づ 는 으 모음(스·즈·쓰)
-  if (vowel === "u" && ["s", "z", "ts", "d"].includes(cons)) return "ㅡ";
+  // す·ず·つ·づ 는 으 모음(스·즈·쓰). どぅ 는 두 — d 는 넣지 않는다
+  if (vowel === "u" && ["s", "z", "ts"].includes(cons)) return "ㅡ";
   return VOWEL[vowel];
 }
 
@@ -86,16 +96,22 @@ function convertWord(word, mode, unknown) {
     const ch = chars[i];
     const last = out[out.length - 1];
     if (ch === "ー") continue; // 장음 부호는 적지 않는다
-    if (ch === "ん") {
-      if (last && !last.raw) last.fin = "ㄴ";
-      continue;
-    }
-    if (ch === "っ") {
-      if (last && !last.raw) last.fin = "ㅅ";
+    if (ch === "ん" || ch === "っ") {
+      if (last && !last.raw) {
+        last.fin = ch === "ん" ? "ㄴ" : "ㅅ";
+      } else {
+        // 첫 글자 ん·っ 은 붙일 음절이 없다 — 조용히 지우지 않고 알린다
+        unknown.push(ch);
+        out.push({ raw: ch });
+      }
+      prevVowel = ""; // ん·っ 뒤의 う·お 는 장음이 아니다(こんおう → 곤오)
       continue;
     }
     // 장음: お段·う段 뒤의 う, お段 뒤의 お 는 적지 않는다(さとう→사토, おおの→오노)
-    if ((ch === "う" && (prevVowel === "o" || prevVowel === "u")) || (ch === "お" && prevVowel === "o")) continue;
+    // 단, 뒤에 모음 가나가 오는 う 는 장음이 아니다(いのうえ → 이노우에)
+    const nextIsVowel = KANA[chars[i + 1]]?.[0] === "";
+    if (ch === "う" && (prevVowel === "o" || prevVowel === "u") && !nextIsVowel) continue;
+    if (ch === "お" && prevVowel === "o") continue;
     const base = KANA[ch];
     if (!base) {
       unknown.push(ch);
