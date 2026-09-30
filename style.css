@@ -5,6 +5,7 @@
   --ink-soft: #5c5474;
   --pink: #ff3d7f;
   --pink-soft: #ffd3e2;
+  --pink-ink: #c2185b; /* 글자용 핑크 — 흰 배경 대비 5.9:1 (--pink 는 3.4:1 이라 장식에만) */
   --mint: #2ec4a6;
   --line: #221a3b;
   --radius: 18px;
@@ -63,7 +64,7 @@ h1 {
 }
 
 .lede { margin: 18px 0 0; color: var(--ink-soft); font-size: 15px; }
-.lede b { color: var(--pink); }
+.lede b { color: var(--pink-ink); }
 
 main { display: grid; gap: 22px; padding-top: 24px; padding-bottom: 40px; }
 
@@ -142,9 +143,9 @@ textarea:focus { outline: none; border-style: solid; border-color: var(--pink); 
   letter-spacing: .02em;
   white-space: nowrap;
 }
-.tile .pron { font-family: var(--ko); font-size: 13px; line-height: 1; color: var(--pink); order: -1; margin-top: 2px; }
+.tile .pron { font-family: var(--ko); font-size: 13px; line-height: 1; color: var(--pink-ink); order: -1; margin-top: 2px; }
 .tile.changed .ko { background: linear-gradient(transparent 55%, var(--pink-soft) 55%); border-radius: 4px; }
-.tile.changed .kana { color: var(--pink); }
+.tile.changed .kana { color: var(--pink-ink); }
 
 .plain {
   margin: 16px 0 0;
@@ -170,7 +171,7 @@ textarea:focus { outline: none; border-style: solid; border-color: var(--pink); 
 .rule h3 small { margin-left: 6px; font-size: 11px; color: var(--ink-soft); font-weight: 500; }
 .rule-ex { margin: 6px 0 2px; display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 8px; }
 .rule-ex .ko { font-family: var(--ko); font-size: 20px; }
-.rule-ex .pron-ko { color: var(--pink); }
+.rule-ex .pron-ko { color: var(--pink-ink); }
 .rule-ex .arrow { color: var(--ink-soft); }
 .rule-ex .kana { width: 100%; font-weight: 700; font-size: 14px; }
 .rule-desc { margin: 0; font-size: 13px; color: var(--ink-soft); }
@@ -186,7 +187,8 @@ textarea:focus { outline: none; border-style: solid; border-color: var(--pink); 
   *, *::before, *::after { animation: none !important; transition: none !important; }
 }
 
-.is-example .lines, .is-example .plain { opacity: .45; }
+/* 빈 입력일 땐 흐리게 하지 않고(대비 부족) 「例」 라벨로 예시임을 알린다 */
+.is-example .lines::before { content: "例"; display: inline-block; margin-bottom: 4px; padding: 0 8px; font-size: 12px; font-weight: 700; color: var(--paper); background: var(--ink-soft); border-radius: 999px; }
 .btn:disabled { opacity: .4; cursor: default; transform: none; box-shadow: none; }
 
 /* ---- フレーズページ ---- */
@@ -199,10 +201,10 @@ a { color: inherit; }
 .facts { display: grid; grid-template-columns: max-content 1fr; gap: 6px 14px; margin: 16px 0; }
 .facts dt { font-size: 12px; font-weight: 700; color: var(--ink-soft); padding-top: 4px; }
 .facts dd { margin: 0; }
-.facts .big { font-size: 24px; font-weight: 700; color: var(--pink); }
+.facts .big { font-size: 24px; font-weight: 700; color: var(--pink-ink); }
 .why { padding-left: 1.2em; }
 .why li { margin: 4px 0; }
-.pron-ko { font-family: var(--ko); font-size: 20px; color: var(--pink); }
+.pron-ko { font-family: var(--ko); font-size: 20px; color: var(--pink-ink); }
 .phrase-list { list-style: none; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 8px; }
 .phrase-list a { display: block; padding: 8px 12px; background: #fff; border: 2px solid var(--ink); border-radius: 12px; text-decoration: none; }
 .phrase-list a:hover { box-shadow: 3px 3px 0 var(--pink); }
