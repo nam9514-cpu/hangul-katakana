@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>「わかった」は韓国語で？알겠어（アルゲッソ）の読み方・発音</title>
+<meta name="description" content="韓国語「알겠어」の読み方はカタカナで「アルゲッソ」。意味は「わかった」。実際の発音（알게써）と、音が変わる理由もやさしく解説。">
+<meta property="og:title" content="「わかった」は韓国語で？알겠어（アルゲッソ）の読み方・発音">
+<meta property="og:description" content="韓国語「알겠어」の読み方はカタカナで「アルゲッソ」。意味は「わかった」。実際の発音（알게써）と、音が変わる理由もやさしく解説。">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://nam9514-cpu.github.io/hangul-katakana/p/algesseo/">
+<link rel="canonical" href="https://nam9514-cpu.github.io/hangul-katakana/p/algesseo/">
+<link rel="icon" href="../../favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Dela+Gothic+One&family=Jua&family=Zen+Maru+Gothic:wght@500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+<header class="masthead small"><a class="kicker" href="../../">한국어 → カタカナ</a></header>
+<main>
+
+<article class="card phrase">
+  <p class="label">毎日の会話</p>
+  <h1 class="phrase-title"><span lang="ko">알겠어</span><small>の読み方</small></h1>
+  <div class="lines"><div class="line"><ruby class="tile"><span class="ko">알</span><rt class="kana">アル</rt></ruby><ruby class="tile changed"><span class="ko">겠</span><rt class="kana">ゲ</rt><span class="pron">게</span></ruby><ruby class="tile changed"><span class="ko">어</span><rt class="kana">ッソ</rt><span class="pron">써</span></ruby></div></div>
+  <dl class="facts">
+    <dt>カタカナ</dt><dd class="big">アルゲッソ</dd>
+    <dt>意味</dt><dd>わかった</dd>
+    <dt>くわしい表記</dt><dd>アㇽゲッソ</dd>
+  </dl>
+  <button type="button" class="btn" id="speak" data-text="알겠어" hidden>▶ 発音を聞く</button>
+</article>
+<section class="rules">
+  <h2>発音のポイント</h2>
+  <p>書いてあるとおりではなく、<span lang="ko" class="pron-ko">알게써</span> のように読みます。</p><ul class="why"><li><b>連音化</b>：パッチム（終わりの子音）が、次の母音にくっついて読まれます。</li><li><b>有声音化</b>：ㄱ・ㄷ・ㅂ・ㅈ は、ことばの始めでは「カ・タ・パ・チャ」、母音や ㄴ・ㄹ・ㅁ・ㅇ のあとでは「ガ・ダ・バ・ジャ」のようににごって聞こえます。 この文では <span lang="ko">겠（ゲ）</span>。</li></ul>
+  <p><a class="btn" href="../../?t=%EC%95%8C%EA%B2%A0%EC%96%B4">変換ツールで試す →</a></p>
+</section>
+<section class="rules">
+  <h2>毎日の会話のほかのフレーズ</h2>
+  <ul class="phrase-list"><li><a href="../jinjja/"><span lang="ko">진짜?</span> <small>本当？</small></a></li><li><a href="../masisseo/"><span lang="ko">맛있어</span> <small>おいしい</small></a></li><li><a href="../masisseoyo/"><span lang="ko">맛있어요</span> <small>おいしいです</small></a></li><li><a href="../baegopa/"><span lang="ko">배고파</span> <small>おなかすいた</small></a></li><li><a href="../molla/"><span lang="ko">몰라</span> <small>知らない・わからない</small></a></li><li><a href="../gwaenchana/"><span lang="ko">괜찮아</span> <small>大丈夫</small></a></li><li><a href="../gwaenchanayo/"><span lang="ko">괜찮아요</span> <small>大丈夫です</small></a></li><li><a href="../ne/"><span lang="ko">네</span> <small>はい</small></a></li><li><a href="../aniyo/"><span lang="ko">아니요</span> <small>いいえ</small></a></li><li><a href="../joayo/"><span lang="ko">좋아요</span> <small>いいです・いいね</small></a></li><li><a href="../sireo/"><span lang="ko">싫어</span> <small>いや</small></a></li><li><a href="../mwo-hae/"><span lang="ko">뭐 해?</span> <small>何してる？</small></a></li><li><a href="../eodiya/"><span lang="ko">어디야?</span> <small>どこにいるの？</small></a></li><li><a href="../heol/"><span lang="ko">헐</span> <small>えっ・うそでしょ</small></a></li><li><a href="../jjang/"><span lang="ko">짱</span> <small>最高・いちばん</small></a></li></ul>
+</section>
+<script>
+(() => {
+  const b = document.getElementById("speak");
+  if (!("speechSynthesis" in window)) return;
+  const show = () => { b.hidden = !speechSynthesis.getVoices().some((v) => v.lang.startsWith("ko")); };
+  show(); speechSynthesis.onvoiceschanged = show;
+  b.addEventListener("click", () => { const u = new SpeechSynthesisUtterance(b.dataset.text); u.lang = "ko-KR"; u.rate = 0.85; speechSynthesis.cancel(); speechSynthesis.speak(u); });
+})();
+</script>
+</main>
+<footer class="foot"><p><a href="../../">ハングル→カタカナ 発音変換</a> ・ <a href="../../p/">フレーズ一覧</a></p><p>© 2026 HARANAM</p></footer>
+</body>
+</html>

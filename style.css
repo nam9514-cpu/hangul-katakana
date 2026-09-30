@@ -188,3 +188,25 @@ textarea:focus { outline: none; border-style: solid; border-color: var(--pink); 
 
 .is-example .lines, .is-example .plain { opacity: .45; }
 .btn:disabled { opacity: .4; cursor: default; transform: none; box-shadow: none; }
+
+/* ---- フレーズページ ---- */
+a { color: inherit; }
+.masthead.small { padding-top: 20px; }
+.masthead.small .kicker { text-decoration: none; }
+.phrase-title { font-family: var(--display); font-weight: 400; font-size: clamp(30px, 8vw, 46px); line-height: 1.25; margin: 4px 0 8px; }
+.phrase-title small { font-family: var(--body); font-size: 16px; margin-left: 8px; color: var(--ink-soft); }
+.phrase-title [lang="ko"] { font-family: var(--ko); }
+.facts { display: grid; grid-template-columns: max-content 1fr; gap: 6px 14px; margin: 16px 0; }
+.facts dt { font-size: 12px; font-weight: 700; color: var(--ink-soft); padding-top: 4px; }
+.facts dd { margin: 0; }
+.facts .big { font-size: 24px; font-weight: 700; color: var(--pink); }
+.why { padding-left: 1.2em; }
+.why li { margin: 4px 0; }
+.pron-ko { font-family: var(--ko); font-size: 20px; color: var(--pink); }
+.phrase-list { list-style: none; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 8px; }
+.phrase-list a { display: block; padding: 8px 12px; background: #fff; border: 2px solid var(--ink); border-radius: 12px; text-decoration: none; }
+.phrase-list a:hover { box-shadow: 3px 3px 0 var(--pink); }
+.phrase-list [lang="ko"] { font-family: var(--ko); font-size: 18px; }
+.phrase-list small { display: block; color: var(--ink-soft); font-size: 12px; }
+a.btn { display: inline-block; text-decoration: none; }
+.to-phrases { text-align: center; font-weight: 700; }

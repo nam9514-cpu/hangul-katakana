@@ -113,7 +113,10 @@ function adnominalTense(tokens) {
     const nextHead = compose({ ini: next.ini, med: next.med, fin: "" });
     const hit = (AFTER_RIEUL_TENSE.has(nextHead) || AFTER_RIEUL_TENSE.has(nextSyl))
       && !(RIEUL_NOT_ADNOMINAL.has(curSyl) && j === i + 1);
-    if (hit || (nextHead === "지" && HAL_JI.has(curSyl))) next.ini = TENSE[next.ini];
+    if (hit || (nextHead === "지" && HAL_JI.has(curSyl))) {
+      next.ini = TENSE[next.ini];
+      mark(cur, next, "tense");
+    }
   }
 }
 
@@ -126,7 +129,7 @@ function joined(tokens, i) {
 
 // 받침과 다음 초성 사이의 음운 변동. 새 토큰 배열을 만든다(입력은 건드리지 않는다).
 function applySandhi(input, style) {
-  const tokens = input.map((t) => ({ ...t }));
+  const tokens = input.map((t) => (t.raw ? { ...t } : { ...t, rules: [] }));
   adnominalTense(tokens);
   for (let i = 0; i < tokens.length; i++) {
     const cur = tokens[i];
@@ -145,6 +148,11 @@ function finalAlone(fin) {
   return NEUTRAL[DOUBLE_BEFORE_CONSONANT[fin] ?? fin];
 }
 
+// 적용된 규칙을 양쪽 음절에 기록한다(화면·페이지에서 "왜 이렇게 읽는지" 설명용)
+function mark(cur, next, rule) {
+  for (const t of [cur, next]) if (!t.rules.includes(rule)) t.rules.push(rule);
+}
+
 const PALATAL_VOWELS = new Set(["ㅣ", "ㅕ"]); // 이, 그리고 이+어 가 줄어든 여(붙여 → 부쳐)
 
 function linkFinal(cur, next, style) {
@@ -155,10 +163,19 @@ function linkFinal(cur, next, style) {
     if (next.ini === "ㅇ") {
       cur.fin = "";
       next.ini = rest || "ㅇ";
+      mark(cur, next, "h-drop");
+      if (rest) mark(cur, next, "liaison");
       return;
     }
-    if (ASPIRATE[next.ini]) next.ini = ASPIRATE[next.ini];
-    else if (next.ini === "ㅅ") next.ini = "ㅆ";
+    if (ASPIRATE[next.ini]) {
+      next.ini = ASPIRATE[next.ini];
+      mark(cur, next, "aspiration");
+    } else if (next.ini === "ㅅ") {
+      next.ini = "ㅆ";
+      mark(cur, next, "tense");
+    } else if (next.ini === "ㄴ" && !rest) {
+      mark(cur, next, "nasal"); // 놓는 → 논는
+    }
     cur.fin = rest || (next.ini === "ㄴ" ? "ㄴ" : "");
     if (cur.fin) linkFinal(cur, next, style);
     return;
@@ -171,6 +188,9 @@ function linkFinal(cur, next, style) {
     if (PALATAL_VOWELS.has(next.med) && (move === "ㄷ" || move === "ㅌ")) moved = move === "ㄷ" ? "ㅈ" : "ㅊ";
     // 겹받침의 둘째 소리는 된소리로 넘어간다(없어 → 업써)
     if (stay && TENSE[moved] && OBSTRUENTS.has(NEUTRAL[stay] || stay)) moved = TENSE[moved];
+    mark(cur, next, "liaison");
+    if (moved !== move && (moved === "ㅈ" || moved === "ㅊ")) mark(cur, next, "palatal");
+    if (moved !== move && TENSE[move] === moved) mark(cur, next, "tense");
     cur.fin = stay;
     next.ini = moved;
     return;
@@ -180,6 +200,7 @@ function linkFinal(cur, next, style) {
     const [stay, move] = DOUBLE_FINAL[fin];
     cur.fin = stay;
     next.ini = ASPIRATE[move];
+    mark(cur, next, "aspiration");
     return;
   }
   let f = NEUTRAL[DOUBLE_BEFORE_CONSONANT[fin] ?? fin];
@@ -189,6 +210,8 @@ function linkFinal(cur, next, style) {
     if (f === "ㄷ" && PALATAL_VOWELS.has(next.med)) aspirated = "ㅊ"; // 닫히다 → 다치다, 묻혀 → 무쳐
     cur.fin = "";
     next.ini = aspirated;
+    mark(cur, next, "aspiration");
+    if (aspirated === "ㅊ" && f === "ㄷ") mark(cur, next, "palatal");
     return;
   }
   // 4) ㅎ 약화: 울림소리 받침(ㄴㄹㅁ) 뒤의 ㅎ은 회화에서 거의 들리지 않는다(미안해 → 미아내).
@@ -196,22 +219,36 @@ function linkFinal(cur, next, style) {
   if (style === "common" && next.ini === "ㅎ" && (f === "ㄴ" || f === "ㄹ" || f === "ㅁ")) {
     cur.fin = "";
     next.ini = f;
+    mark(cur, next, "h-weak");
     return;
   }
   // 5) 유음화
   if ((f === "ㄴ" && next.ini === "ㄹ") || (f === "ㄹ" && next.ini === "ㄴ")) {
     f = "ㄹ";
     next.ini = "ㄹ";
+    mark(cur, next, "lateral");
   }
   // 6) ㄹ의 비음화: ㅁ·ㅇ·ㄱ·ㅂ 뒤 ㄹ → ㄴ
-  if (next.ini === "ㄹ" && f !== "ㄹ" && f !== "") next.ini = "ㄴ";
+  if (next.ini === "ㄹ" && f !== "ㄹ" && f !== "") {
+    next.ini = "ㄴ";
+    mark(cur, next, "nasal");
+  }
   // 7) 비음화: 파열음 받침 + 비음
-  if (next.ini === "ㄴ" || next.ini === "ㅁ") f = { ㄱ: "ㅇ", ㄷ: "ㄴ", ㅂ: "ㅁ" }[f] ?? f;
+  if (next.ini === "ㄴ" || next.ini === "ㅁ") {
+    const nasal = { ㄱ: "ㅇ", ㄷ: "ㄴ", ㅂ: "ㅁ" }[f];
+    if (nasal) {
+      f = nasal;
+      mark(cur, next, "nasal");
+    }
+  }
   // 8) 경음화: 파열음 받침 뒤 예사소리 → 된소리. ㄵ·ㄻ 은 용언 어간에만 있어 뒤가 된소리(앉다 → 안따)
   // 다만 피동·사동 -기- 앞의 ㄻ 은 예외(옮기다 → 옴기다, 굶기다 → 굼기다, 표준 발음법 제24항 다만)
   const causative = fin === "ㄻ" && next.ini === "ㄱ" && (next.med === "ㅣ" || next.med === "ㅕ");
   const stemTense = (fin === "ㄵ" || fin === "ㄻ") && !causative;
-  if ((f === "ㄱ" || f === "ㄷ" || f === "ㅂ" || stemTense) && TENSE[next.ini]) next.ini = TENSE[next.ini];
+  if ((f === "ㄱ" || f === "ㄷ" || f === "ㅂ" || stemTense) && TENSE[next.ini]) {
+    next.ini = TENSE[next.ini];
+    mark(cur, next, "tense");
+  }
   cur.fin = f;
 }
 
@@ -274,7 +311,7 @@ function compose({ ini, med, fin }) {
  * 음절 단위 변환 결과. 화면에서 "발음이 바뀐 글자" 를 강조하는 데 쓴다.
  * @param {string} text
  * @param {{ style?: "common" | "precise" }} [options]
- * @returns {{ src: string, pron: string, kana: string, changed: boolean }[]}
+ * @returns {{ src: string, pron: string, kana: string, changed: boolean, rules: string[], voiced: boolean }[]}
  *   src = 원래 글자, pron = 소리 나는 대로 쓴 한글, kana = 카타카나, changed = 발음이 글자와 다른가
  */
 export function toSegments(text, options) {
@@ -283,24 +320,29 @@ export function toSegments(text, options) {
   const original = tokenize(String(text));
   const tokens = applySandhi(original, style);
   const segments = [];
-  let prevVoicedEnd = false; // 직전 소리가 모음·울림소리인가(같은 단어 안)
+  let prevVoicedEnd = false; // 직전 소리가 모음·울림소리인가(띄어쓰기는 이어 본다)
   let prevOpen = false; // 직전 음절이 받침 없이 끝났는가(같은 단어 안)
   for (let i = 0; i < tokens.length; i++) {
     const t = tokens[i];
     if (t.raw) {
-      segments.push({ src: t.raw, pron: t.raw, kana: t.raw, changed: false });
-      prevVoicedEnd = false; // 띄어쓰기 뒤는 단어 첫소리 — 사전·학습서 표기와 같다
+      segments.push({ src: t.raw, pron: t.raw, kana: t.raw, changed: false, rules: [], voiced: false });
+      // 띄어쓰기는 구절 안이라 탁음화를 이어 본다(잘 자 → チャル ジャ). 줄바꿈·문장부호는 끊는다
+      if (!(/\s/.test(t.raw) && t.raw !== "\n")) prevVoicedEnd = false;
       prevOpen = false;
       continue;
     }
     const sound = consonantSound(t.ini, prevVoicedEnd);
     let kana = prevOpen && !t.spaceBefore && ["ㄲ", "ㄸ", "ㅃ", "ㅆ", "ㅉ"].includes(t.ini) ? "ッ" : "";
-    kana += syllableKana(sound, t.med, style);
+    // 관용: 모음 뒤 예(얼마예요·거예요)는 회화에서 에 → エ
+    const yeAfterVowel = style === "common" && t.ini === "ㅇ" && t.med === "ㅖ" && prevOpen && !t.spaceBefore;
+    kana += yeAfterVowel ? "エ" : syllableKana(sound, t.med, style);
     const next = joined(tokens, i) ? tokens[i + 1] : null;
     kana += finalKana(t.fin, next, style);
     const src = compose(original[i]);
     const pron = compose(t);
-    segments.push({ src, pron, kana, changed: src !== pron });
+    // 유성음화: 예사소리 ㄱㄷㅂㅈ 이 모음·울림소리 뒤에서 ガ・ダ・バ・ジャ 로 들린다(규칙표와 별도로 알린다)
+    const voiced = ["g", "d", "b", "j"].includes(sound);
+    segments.push({ src, pron, kana, changed: src !== pron, rules: [...t.rules], voiced });
     prevVoicedEnd = t.fin === "" || SONORANT_FINALS.has(t.fin);
     prevOpen = t.fin === "";
   }
@@ -312,6 +354,18 @@ export function toSegments(text, options) {
  * @param {{ style?: "common" | "precise" }} [options]
  * @returns {string}
  */
+/** 규칙 키 → 일본어 이름(화면 표시용) */
+export const RULE_NAMES = {
+  liaison: "連音化",
+  nasal: "鼻音化",
+  lateral: "流音化",
+  aspiration: "激音化",
+  palatal: "口蓋音化",
+  tense: "濃音化",
+  "h-drop": "ㅎの脱落",
+  "h-weak": "ㅎの弱音化",
+};
+
 export function toKana(text, options) {
   return toSegments(text, options).map((seg) => seg.kana).join("");
 }
