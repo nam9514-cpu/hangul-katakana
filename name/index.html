@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>名前をハングルに変換｜韓国語で自分の名前を書こう</title>
+  <meta name="description" content="ひらがな・カタカナで名前を入れると、ハングル表記に変換します。韓国の公式ルールの表記と、発音に近い表記の2つを表示。名前カード画像も作れます。登録不要・無料。">
+  <meta property="og:title" content="名前をハングルに変換｜韓国語で自分の名前を書こう">
+  <meta property="og:description" content="さくら → 사쿠라。公式ルールと、発音に近い表記の2つがわかる。">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://nam9514-cpu.github.io/hangul-katakana/name/">
+  <meta property="og:image" content="https://nam9514-cpu.github.io/hangul-katakana/og/name.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="canonical" href="https://nam9514-cpu.github.io/hangul-katakana/name/">
+  <link rel="icon" href="../favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Dela+Gothic+One&family=Jua&family=Zen+Maru+Gothic:wght@500;700&display=swap" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Dela+Gothic+One&family=Jua&family=Zen+Maru+Gothic:wght@500;700&display=swap"></noscript>
+  <link rel="stylesheet" href="../style.css">
+</head>
+<body>
+  <header class="masthead">
+    <a class="kicker" href="../">한국어 → カタカナ</a>
+    <h1>名前を<br><span class="hl">ハングル</span>で<br>書いてみよう。</h1>
+    <p class="lede">ひらがな・カタカナで入れると、韓国語の文字（ハングル）に変換します。</p>
+  </header>
+
+  <main>
+    <section class="card input-card" aria-label="入力">
+      <label for="name" class="label">名前（ひらがな・カタカナ。姓と名の間はスペース）</label>
+      <input id="name" class="name-input" type="text" maxlength="40" placeholder="さくら" autocomplete="off" lang="ja">
+      <p class="hint" id="unknown" hidden></p>
+    </section>
+
+    <section class="card result-card" aria-label="結果">
+      <div class="name-results">
+        <div class="name-box">
+          <p class="label">発音に近い表記 <small>おすすめ</small></p>
+          <p class="name-ko" id="sound" lang="ko"></p>
+          <p class="name-read" id="sound-read"></p>
+        </div>
+        <div class="name-box">
+          <p class="label">韓国の公式ルールの表記</p>
+          <p class="name-ko" id="standard" lang="ko"></p>
+          <p class="name-read" id="standard-read"></p>
+        </div>
+      </div>
+      <div class="actions">
+        <button type="button" id="save-card" class="btn">名前カードを保存</button>
+        <button type="button" id="copy-name" class="btn">ハングルをコピー</button>
+      </div>
+      <p class="legend">下のカタカナは、そのハングルを韓国人が読んだときの音です。</p>
+    </section>
+
+    <section class="rules">
+      <h2>表記が2つあるのはなぜ？</h2>
+      <p>韓国の公式ルールでは、ことばの始めの「カ・タ・チャ」を <span lang="ko">가・다・자</span> と書きます（例：かとう → <span lang="ko">가토</span>）。
+        韓国人が読むと、ことばの始めの <span lang="ko">가</span> は「カ」に近い音になります（上の小さいカタカナ）。
+        でも日本では <span lang="ko">가</span> を「ガ」と習うので、日本の人には「ガトウ」と読まれがちです。そこで、だれが読んでも「カ」になる <span lang="ko">카・타・차</span> を使った表記もいっしょに出しています（かとう → <span lang="ko">카토</span>）。</p>
+      <p>「つ」も、公式ルールでは <span lang="ko">쓰</span>、音に近い表記では <span lang="ko">츠</span> です。のばす音（ー・う）は、どちらも書きません（さとう → <span lang="ko">사토</span>）。</p>
+      <p><a class="btn" href="../">ハングル→カタカナ 発音変換 →</a> <a class="btn" href="../p/">韓国語フレーズの読み方 →</a></p>
+    </section>
+  </main>
+
+  <footer class="foot">
+    <p>入力した文字はサーバーに送られません。すべてブラウザの中で変換しています。</p>
+    <p>© 2026 HARANAM</p>
+  </footer>
+  <script type="module" src="name.js"></script>
+</body>
+</html>
