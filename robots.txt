@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://nam9514-cpu.github.io/hangul-katakana/sitemap.xml

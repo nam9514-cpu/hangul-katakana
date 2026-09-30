@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ハングル→カタカナ 発音変換｜本当の読み方がわかる</title>
+  <meta name="description" content="韓国語（ハングル）を、実際に聞こえる音のカタカナに変換します。連音化・鼻音化・激音化など発音のルールを反映。K-POPの歌詞や韓国語の勉強に。登録不要・無料。">
+  <meta property="og:title" content="ハングル→カタカナ 発音変換｜本当の読み方がわかる">
+  <meta property="og:description" content="감사합니다 は「カムサハムニダ」。書いてあるとおりに読まない音まで、カタカナでわかる。">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://nam9514-cpu.github.io/hangul-katakana/">
+  <link rel="canonical" href="https://nam9514-cpu.github.io/hangul-katakana/">
+  <meta name="twitter:card" content="summary">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Dela+Gothic+One&family=Jua&family=Zen+Maru+Gothic:wght@500;700&display=swap" rel="stylesheet">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="style.css">
+  <script type="application/ld+json">
+  {"@context":"https://schema.org","@type":"WebApplication","name":"ハングル→カタカナ 発音変換","applicationCategory":"EducationalApplication","operatingSystem":"Any","inLanguage":"ja","offers":{"@type":"Offer","price":"0","priceCurrency":"JPY"}}
+  </script>
+</head>
+<body>
+  <header class="masthead">
+    <p class="kicker">한국어 → カタカナ</p>
+    <h1>ハングルを<br><span class="hl">聞こえるとおり</span>の<br>カタカナに。</h1>
+    <p class="lede"><span lang="ko">감사합니다</span> は「カムサ<b>ハプ</b>ニダ」ではなく「カムサ<b>ハム</b>ニダ」。<br>書いてあるとおりに読まない音まで、ぜんぶカタカナで。</p>
+  </header>
+
+  <main>
+    <section class="card input-card" aria-label="入力">
+      <label for="src" class="label">ハングルを入力（歌詞もOK・改行もそのまま）</label>
+      <textarea id="src" rows="4" maxlength="2000" lang="ko" placeholder="사랑해요" spellcheck="false"></textarea>
+      <div class="chips" id="examples" aria-label="例"></div>
+      <div class="controls">
+        <div class="toggle" role="radiogroup" aria-label="表記">
+          <button type="button" role="radio" aria-checked="true" data-style="common">ふつう</button>
+          <button type="button" role="radio" aria-checked="false" data-style="precise">くわしい</button>
+        </div>
+        <p class="hint" id="style-hint">よく見るカタカナ表記です。</p>
+      </div>
+    </section>
+
+    <section class="card result-card" aria-label="結果">
+      <div class="result-head">
+        <span class="label">よみかた</span>
+        <div class="actions">
+          <button type="button" id="speak" class="btn" hidden>▶ 発音を聞く</button>
+          <button type="button" id="copy" class="btn">コピー</button>
+          <button type="button" id="share" class="btn">URLをコピー</button>
+        </div>
+      </div>
+      <div id="lines" class="lines"></div>
+      <p id="plain" class="plain" aria-live="polite"></p>
+      <p class="legend"><span class="swatch"></span> ピンクの文字は、書いてあるとおりに読まない音。下の小さいハングルが、実際の音です。</p>
+    </section>
+
+    <section class="rules" aria-labelledby="rules-title">
+      <h2 id="rules-title">どうして書いてあるとおりに読まないの？</h2>
+      <p>韓国語は、となりの音とくっつくと音が変わります。このツールは、次のルールを反映しています。</p>
+      <div class="rule-grid" id="rule-grid"></div>
+      <p class="note">※ 特定の単語でだけ起きる変化（例：<span lang="ko">꽃잎</span>→<span lang="ko">꼰닙</span>）は、まだ反映できていません。</p>
+    </section>
+  </main>
+
+  <footer class="foot">
+    <p>入力した文字はサーバーに送られません。すべてブラウザの中で変換しています。</p>
+    <p>© 2026 HARANAM</p>
+  </footer>
+
+  <script type="module" src="app.js"></script>
+</body>
+</html>
