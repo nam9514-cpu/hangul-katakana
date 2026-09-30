@@ -1,6 +1,7 @@
 // 변환 결과를 SNS 에 올리기 좋은 PNG 카드로 그린다(한글 위에 카타카나 루비).
 // 하단에 사이트 주소를 넣어, 공유될 때마다 도구가 함께 알려지게 한다.
 import { toSegments } from "./hangul-kana.js";
+import { clampInput, splitLongWord } from "./card-layout.js";
 
 const W = 1080;
 const PAD = 72;
@@ -20,7 +21,7 @@ function layoutLine(ctx, segments, maxWidth) {
   const words = [];
   let word = [];
   for (const seg of segments) {
-    if (seg.src === " ") {
+    if (/\s/.test(seg.src)) { // 전각 공백·탭도 단어 경계
       if (word.length) words.push(word);
       word = [];
     } else {
@@ -28,14 +29,18 @@ function layoutLine(ctx, segments, maxWidth) {
     }
   }
   if (word.length) words.push(word);
-  ctx.font = `${KO_SIZE}px Jua`;
-  for (const w of words) {
-    const width = w.reduce((sum, seg) => sum + cellWidth(ctx, seg), 0);
+  // 폭보다 긴 단어는 음절 단위로 쪼갠다(띄어쓰기 없는 긴 가사)
+  const pieces = words.flatMap((w) => {
+    const cells = w.map((seg) => ({ seg, w: cellWidth(ctx, seg) }));
+    return splitLongWord(cells, maxWidth);
+  });
+  for (const piece of pieces) {
+    const width = piece.reduce((sum, c) => sum + c.w, 0);
     if (x > 0 && x + GAP + width > maxWidth) {
       rows.push([]);
       x = 0;
     }
-    rows[rows.length - 1].push(w);
+    rows[rows.length - 1].push(piece.map((c) => c.seg));
     x += (x > 0 ? GAP : 0) + width;
   }
   return rows;
@@ -78,11 +83,18 @@ function drawRow(ctx, row, y) {
 }
 
 /**
- * @param {string} text
+ * @param {string} input
  * @param {{ style?: "common" | "precise", siteLabel: string }} options
  * @returns {Promise<Blob>}
  */
-export async function renderCard(text, { style = "common", siteLabel }) {
+export async function renderCard(input, { style = "common", siteLabel }) {
+  const { text } = clampInput(input);
+  const kanaText = toSegments(text, { style }).map((s) => s.kana).join("");
+  // fonts.ready 는 이미 받는 중인 글꼴만 기다린다 — 화면에 없던 글자 조각도 받아 두고 그린다
+  await Promise.all([
+    document.fonts.load(`${KO_SIZE}px Jua`, text),
+    document.fonts.load(`700 ${KANA_SIZE}px "Zen Maru Gothic"`, kanaText),
+  ]).catch(() => {}); // 글꼴을 못 받아도 대체 글꼴로 그린다
   await document.fonts.ready;
   const measure = document.createElement("canvas").getContext("2d");
   const rows = text.split("\n").filter((l) => l.trim())
