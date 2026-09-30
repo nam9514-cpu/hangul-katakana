@@ -213,3 +213,11 @@ a.btn { display: inline-block; text-decoration: none; }
 
 .promo { background: var(--pink-soft); }
 .promo p { margin: 0 0 10px; }
+
+.level { display: inline-block; padding: 0 10px; border: 2px solid var(--ink); border-radius: 999px; font-size: 13px; font-weight: 700; }
+.level-casual { background: #d9f5ee; }
+.level-polite { background: #fff1c9; }
+.level-formal { background: var(--pink-soft); }
+/* 카타카나는 띄어쓰기에서만 줄바꿈 — ドゥ 같은 두 글자 소리가 갈라지지 않게 */
+.facts dd, .plain, .phrase-list b { word-break: keep-all; overflow-wrap: anywhere; }
+.phrase-title small { white-space: nowrap; }

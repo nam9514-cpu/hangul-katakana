@@ -136,12 +136,26 @@ function applySandhi(input, style) {
     if (cur.raw) continue;
     if (!joined(tokens, i)) {
       cur.fin = finalAlone(cur.fin);
+      nasalizeAcrossSpace(tokens, i);
       continue;
     }
     const next = tokens[i + 1];
     linkFinal(cur, next, style);
   }
   return tokens;
+}
+
+// 띄어쓰기를 넘어서도 비음화는 거의 예외 없이 일어난다(복 많이 → 봉 마니, 밥 먹어 → 밤 머거).
+// 연음·경음 등 다른 규칙은 단어 안에서만 적용한다.
+function nasalizeAcrossSpace(tokens, i) {
+  const cur = tokens[i];
+  const next = tokens[i + 2];
+  if (tokens[i + 1]?.raw !== " " || !next || next.raw) return;
+  if (next.ini !== "ㄴ" && next.ini !== "ㅁ") return;
+  const nasal = { ㄱ: "ㅇ", ㄷ: "ㄴ", ㅂ: "ㅁ" }[cur.fin];
+  if (!nasal) return;
+  cur.fin = nasal;
+  mark(cur, next, "nasal");
 }
 
 function finalAlone(fin) {

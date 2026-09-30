@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>「うれしい」は韓国語で？기뻐（キッポ）の読み方・発音</title>
+<meta name="description" content="韓国語「기뻐」の読み方はカタカナで「キッポ」。意味は「うれしい」。実際の発音（기뻐）と、音が変わる理由もやさしく解説。">
+<meta property="og:title" content="「うれしい」は韓国語で？기뻐（キッポ）の読み方・発音">
+<meta property="og:description" content="韓国語「기뻐」の読み方はカタカナで「キッポ」。意味は「うれしい」。実際の発音（기뻐）と、音が変わる理由もやさしく解説。">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://nam9514-cpu.github.io/hangul-katakana/p/gippeo/">
+<link rel="canonical" href="https://nam9514-cpu.github.io/hangul-katakana/p/gippeo/">
+<link rel="icon" href="../../favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Dela+Gothic+One&family=Jua&family=Zen+Maru+Gothic:wght@500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+<header class="masthead small"><a class="kicker" href="../../">한국어 → カタカナ</a></header>
+<main>
+
+<article class="card phrase">
+  <p class="label">気持ち</p>
+  <h1 class="phrase-title"><span lang="ko">기뻐</span><small>の読み方</small></h1>
+  <div class="lines"><div class="line"><ruby class="tile"><span class="ko">기</span><rt class="kana">キ</rt></ruby><ruby class="tile"><span class="ko">뻐</span><rt class="kana">ッポ</rt></ruby></div></div>
+  <dl class="facts">
+    <dt>カタカナ</dt><dd class="big">キッポ</dd>
+    <dt>意味</dt><dd>うれしい</dd>
+    <dt>くわしい表記</dt><dd>キッポ</dd>
+    <dt>言い方</dt><dd><span class="level level-casual">タメ口</span> <small>友だちや年下に使う、くだけた言い方</small></dd>
+  </dl>
+  <button type="button" class="btn" id="speak" data-text="기뻐" hidden>▶ 発音を聞く</button>
+</article>
+<section class="rules">
+  <h2>発音のポイント</h2>
+  <p>文字は書いてあるとおりに読めばOKです。</p><p>音が変わるところはありません。</p>
+  <p><a class="btn" href="../../?t=%EA%B8%B0%EB%BB%90">変換ツールで試す →</a></p>
+</section>
+<section class="rules">
+  <h2>気持ちのほかのフレーズ</h2>
+  <ul class="phrase-list"><li><a href="../baebulleo/"><span lang="ko">배불러</span> <small>おなかいっぱい</small></a></li><li><a href="../jollyeo/"><span lang="ko">졸려</span> <small>ねむい</small></a></li><li><a href="../pigonhae/"><span lang="ko">피곤해</span> <small>つかれた</small></a></li><li><a href="../simsimhae/"><span lang="ko">심심해</span> <small>ひま・たいくつ</small></a></li><li><a href="../jaemisseo/"><span lang="ko">재밌어</span> <small>おもしろい・楽しい</small></a></li><li><a href="../museowo/"><span lang="ko">무서워</span> <small>こわい</small></a></li><li><a href="../haengbokae/"><span lang="ko">행복해</span> <small>しあわせ</small></a></li><li><a href="../hwanasseo/"><span lang="ko">화났어</span> <small>怒ってる</small></a></li><li><a href="../bukkeureowo/"><span lang="ko">부끄러워</span> <small>はずかしい</small></a></li><li><a href="../seolle/"><span lang="ko">설레</span> <small>ドキドキする・ときめく</small></a></li><li><a href="../gamdongiya/"><span lang="ko">감동이야</span> <small>感動した</small></a></li><li><a href="../michyeotda/"><span lang="ko">미쳤다</span> <small>やばい（すごすぎる）</small></a></li></ul>
+</section>
+<script>
+(() => {
+  const b = document.getElementById("speak");
+  if (!("speechSynthesis" in window)) return;
+  const show = () => { b.hidden = !speechSynthesis.getVoices().some((v) => v.lang.startsWith("ko")); };
+  show(); speechSynthesis.onvoiceschanged = show;
+  b.addEventListener("click", () => { const u = new SpeechSynthesisUtterance(b.dataset.text); u.lang = "ko-KR"; u.rate = 0.85; speechSynthesis.cancel(); speechSynthesis.speak(u); });
+})();
+</script>
+</main>
+<footer class="foot"><p><a href="../../">ハングル→カタカナ 発音変換</a> ・ <a href="../../p/">フレーズ一覧</a></p><p>© 2026 HARANAM</p></footer>
+</body>
+</html>
